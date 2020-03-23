@@ -54,7 +54,7 @@ public class OrderController {
     }
 
     @ApiOperation(value = "Creates an order", notes = "This Operation creates a new order.")
-    @PostMapping(value = "order/create")
+    @PostMapping(value = "order")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest payload) throws PaymentNotAcceptedException {
         Order order = orderService.createOrder(payload);
         return new ResponseEntity<>(converter.convertEntityToDto(order), HttpStatus.CREATED);
