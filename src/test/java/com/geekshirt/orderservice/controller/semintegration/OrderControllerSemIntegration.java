@@ -39,7 +39,7 @@ public class OrderControllerSemIntegration {
         header.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<OrderRequest> entity = new HttpEntity<>(orderRequest, header);
 
-        ResponseEntity<OrderResponse> response = testRestTemplate.postForEntity("/order/create", entity, OrderResponse.class);
+        ResponseEntity<OrderResponse> response = testRestTemplate.postForEntity("/order", entity, OrderResponse.class);
 
         Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 

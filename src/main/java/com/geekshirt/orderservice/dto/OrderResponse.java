@@ -1,14 +1,17 @@
 package com.geekshirt.orderservice.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 @Setter
-public class OrderResponse {
+public class OrderResponse implements Serializable {
     private String orderId;
     private String status;
     private String accountId;
@@ -17,5 +20,5 @@ public class OrderResponse {
     private Double totalAmountTax;
     private Date transactionDate;
 
-    List<OrderDetailResponse> details;
+    private List<OrderDetailResponse> details;
 }
