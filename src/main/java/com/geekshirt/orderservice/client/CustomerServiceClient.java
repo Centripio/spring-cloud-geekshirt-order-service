@@ -20,14 +20,11 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class CustomerServiceClient {
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private OrderServiceConfig config;
-
-    public CustomerServiceClient(RestTemplateBuilder builder) {
-        restTemplate = builder.build();
-    }
 
     public Optional<AccountDto> findAccount(String accountId) {
         Optional<AccountDto> result = Optional.empty();

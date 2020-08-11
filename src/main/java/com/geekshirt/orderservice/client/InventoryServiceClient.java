@@ -14,14 +14,11 @@ import java.util.List;
 
 @Component
 public class InventoryServiceClient {
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private OrderServiceConfig serviceConfig;
-
-    public InventoryServiceClient(RestTemplateBuilder builder) {
-        restTemplate = builder.build();
-    }
 
     public void updateInventory(List<LineItem> requestItems) {
        ResponseEntity<String> response = restTemplate.postForEntity(

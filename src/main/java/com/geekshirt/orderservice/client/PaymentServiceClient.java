@@ -10,14 +10,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class PaymentServiceClient {
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
     private OrderServiceConfig serviceConfig;
-
-    public PaymentServiceClient(RestTemplateBuilder builder) {
-        restTemplate = builder.build();
-    }
 
     public Confirmation authorize(PaymentRequest request) {
          Confirmation confirmation = restTemplate.postForObject(
