@@ -1,6 +1,7 @@
 package com.geekshirt.orderservice.service;
 
 import com.geekshirt.orderservice.client.CustomerServiceClient;
+import com.geekshirt.orderservice.client.CustomerServiceDiscoveryClient;
 import com.geekshirt.orderservice.client.CustomerServiceFeignClient;
 import com.geekshirt.orderservice.client.InventoryServiceClient;
 import com.geekshirt.orderservice.dto.*;
@@ -51,6 +52,9 @@ public class OrderService {
     @Autowired
     private CustomerServiceFeignClient customerFeignClient;
 
+    @Autowired
+    private CustomerServiceDiscoveryClient customerServiceDiscoveryClient;
+
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public Order createOrder(OrderRequest orderRequest) throws PaymentNotAcceptedException {
         OrderValidator.validateOrder(orderRequest);
@@ -58,6 +62,8 @@ public class OrderService {
      AccountDto account = customerClient.findAccount(orderRequest.getAccountId())
                                         .orElseThrow(() -> new AccountNotFoundException(ExceptionMessagesEnum.ACCOUNT_NOT_FOUND.getValue()));
 
+    /* AccountDto account = customerServiceDiscoveryClient.findAccount(orderRequest.getAccountId())
+                                        .orElseThrow(() -> new AccountNotFoundException(ExceptionMessagesEnum.ACCOUNT_NOT_FOUND.getValue()));*/
         Order newOrder = initOrder(orderRequest);
 
         Confirmation confirmation = paymentService.processPayment(newOrder, account);
