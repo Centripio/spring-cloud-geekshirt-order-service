@@ -6,9 +6,10 @@ import com.geekshirt.orderservice.dto.AddressDto;
 import com.geekshirt.orderservice.dto.CreditCardDto;
 import com.geekshirt.orderservice.dto.CustomerDto;
 import com.geekshirt.orderservice.util.AccountStatus;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,13 @@ public class CustomerServiceClient {
     @Autowired
     private OrderServiceConfig config;
 
+    @HystrixCommand(commandProperties = {
+            @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value="10"),
+            @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds", value="40000"),
+            @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="50"),
+            @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="10000"),
+            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="5000")
+    })
     public Optional<AccountDto> findAccount(String accountId) {
         Optional<AccountDto> result = Optional.empty();
         try {
