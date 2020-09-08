@@ -27,12 +27,12 @@ public class CustomerServiceClient {
     @Autowired
     private OrderServiceConfig config;
 
-    @HystrixCommand(commandProperties = {
+    @HystrixCommand(fallbackMethod = "fallbackFindAccount", commandProperties = {
             @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value="10"),
             @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds", value="40000"),
             @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="50"),
             @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="10000"),
-            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="5000")
+            @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="13000")
     })
     public Optional<AccountDto> findAccount(String accountId) {
         Optional<AccountDto> result = Optional.empty();
@@ -47,35 +47,36 @@ public class CustomerServiceClient {
         return result;
     }
 
-    public AccountDto createDummyAccount() {
+    public Optional<AccountDto> fallbackFindAccount(String accountId) {
         AddressDto address =  AddressDto.builder().street("Mariano Otero")
-                                .city("Guadalajara")
-                                .state("Jalisco")
-                                .country("Mexico").zipCode("12131")
-                                .build();
+                .city("Guadalajara")
+                .state("Jalisco")
+                .country("Mexico").zipCode("12131")
+                .build();
 
         CustomerDto customer = CustomerDto.builder().lastName("Madero")
-                                .firstName("Juan")
-                                .email("juan.made@xyz.com")
-                                .build();
+                .firstName("Juan")
+                .email("juan.made@xyz.com")
+                .build();
 
         CreditCardDto creditCard = CreditCardDto.builder()
-                                .nameOnCard("Juan Madero")
-                                .number("4320 1231 4552 1234")
-                                .expirationMonth("03")
-                                .expirationYear("2023")
-                                .type("VISA")
-                                .ccv("123")
-                                .build();
+                .nameOnCard("Juan Madero")
+                .number("4320 1231 4552 1234")
+                .expirationMonth("03")
+                .expirationYear("2023")
+                .type("VISA")
+                .ccv("123")
+                .build();
 
         AccountDto account = AccountDto.builder()
-                                .address(address)
-                                .customer(customer)
-                                .creditCard(creditCard)
-                                .status(AccountStatus.ACTIVE)
-                                .build();
+                .address(address)
+                .customer(customer)
+                .creditCard(creditCard)
+                .status(AccountStatus.ACTIVE)
+                .id(Long.valueOf(accountId))
+                .build();
 
-       return  account;
+        return  Optional.ofNullable(account);
     }
 
     public AccountDto createAccount(AccountDto account) {
