@@ -27,7 +27,11 @@ public class CustomerServiceClient {
     @Autowired
     private OrderServiceConfig config;
 
-    @HystrixCommand(fallbackMethod = "fallbackFindAccount", commandProperties = {
+    @HystrixCommand(fallbackMethod = "fallbackFindAccount",
+            threadPoolKey = "customerThreadPool",
+            threadPoolProperties = {@HystrixProperty(name="coreSize", value="10"),
+                    @HystrixProperty(name="maxQueueSize", value="5")},
+            commandProperties = {
             @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value="10"),
             @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds", value="40000"),
             @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="50"),
