@@ -10,6 +10,7 @@ import com.geekshirt.orderservice.entities.OrderDetail;
 import com.geekshirt.orderservice.exception.AccountNotFoundException;
 import com.geekshirt.orderservice.exception.OrderNotFoundException;
 import com.geekshirt.orderservice.exception.PaymentNotAcceptedException;
+import com.geekshirt.orderservice.producer.ShippingOrderKafkaProducer;
 import com.geekshirt.orderservice.producer.ShippingOrderProducer;
 import com.geekshirt.orderservice.repositories.OrderRepository;
 import com.geekshirt.orderservice.util.*;
@@ -45,6 +46,9 @@ public class OrderService {
 
     @Autowired
     private ShippingOrderProducer shipmentMessageProducer;
+
+    @Autowired
+    private ShippingOrderKafkaProducer shipmentMessageKafkaProducer;
 
     @Autowired
     private OrderMailService mailService;
@@ -83,7 +87,8 @@ public class OrderService {
         inventoryClient.updateInventory(orderRequest.getItems());
 
         log.info("Sending Request to Shipping Service.");
-        shipmentMessageProducer.send(newOrder.getOrderId(), account);
+        //shipmentMessageProducer.send(newOrder.getOrderId(), account);
+        shipmentMessageKafkaProducer.publish(newOrder.getOrderId(), account);
         return orderRepository.save(newOrder);
     }
 
