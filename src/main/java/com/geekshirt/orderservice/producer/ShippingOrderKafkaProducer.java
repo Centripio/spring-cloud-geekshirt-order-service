@@ -1,6 +1,5 @@
 package com.geekshirt.orderservice.producer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekshirt.orderservice.dto.AccountDto;
 import com.geekshirt.orderservice.dto.CustomerDto;
 import com.geekshirt.orderservice.dto.ShipmentOrderRequest;
@@ -32,6 +31,7 @@ public class ShippingOrderKafkaProducer {
                 .send(MessageBuilder
                     .withPayload(shipmentRequest)
                     .build());
+
 
         log.debug(" [x] Sent to Kafka '" + shipmentRequest.toString() + "'");
     }
